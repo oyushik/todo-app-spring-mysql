@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <script>
+        // Function to toggle the visibility of the inline edit form for a task
+        function toggleEditForm(id) {
+            var form = document.getElementById("editForm-" + id);
+            if (form.style.display === "none") {
+                form.style.display = "inline-block";
+            } else {
+                form.style.display = "none";
+            }
+        }
+    </script>
+</head>
+<body>
+<h1>Todo App</h1>
+<!-- Form to add a new task -->
+<form method="post" action="/addTodo">
+    <input type="text" name="task" placeholder="enter new task" />
+    <input type="submit" value="Add" />
+</form>
+<hr>
+<ul>
+    <li th:each="todo : ${allTodoClass}">
+        <!-- Display task -->
+        <span th:text="${todo.task}"></span>
+        <!-- Edit button -->
+        <button type="button" th:onclick="'toggleEditForm(' + ${todo.id} + ');'" style="margin-right: 10px;">Edit</button>
+        <!-- Delete button form -->
+        <form method="post" th:action="@{/deleteTodo}" style="display:inline; margin-left: 10px;">
+            <input type="hidden" name="id" th:value="${todo.id}" />
+            <input type="submit" value="Delete" />
+        </form>
+        <!-- Inline edit form (hidden by default), appears 10px to the right of Delete button -->
+        <span th:attr="id='editForm-' + ${todo.id}" style="display: none; margin-left: 10px;">
+            <form method="post" th:action="@{/editTodo}">
+                <input type="hidden" name="id" th:value="${todo.id}" />
+                <input type="text" name="task" placeholder="Update task" th:value="${todo.task}" />
+                <input type="submit" value="Save" />
+            </form>
+        </span>
+    </li>
+</ul>
+</body>
+</html>
